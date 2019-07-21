@@ -25,7 +25,7 @@ var toDoFollow = process.argv.slice(3).join(" ");
 
 console.log(toDo, toDoFollow);
 
-var getArtistNames = function(artist) {
+var getArtistNames = function (artist) {
     return artist.name;
 };
 
@@ -33,81 +33,111 @@ var getArtistNames = function(artist) {
 
 //node liri.js concert-this <artist/band name here>
 
-function concertThis (artist){
-console.log("Concert This");
-var queryUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+function concertThis(artist) {
+    console.log("Concert This");
+    var bandsUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
 
-console.log(queryUrl);
+    console.log(bandsUrl);
 
-axios.get(queryUrl)
-.then(function (response) {
-    console.log(response.data);
+    axios.get(bandsUrl)
+        .then(function (response) {
+            console.log(response.data);
+            var bandsData=response.data;
 
-    if (!response.data.length) {
-        console.log( "No results found for that Artist");
-    } else {
+            if (!bandsData.length) {
+                console.log("No results found for that Artist");
+            } else {
 
-        console.log("Here is the upcoming shows for" + artist);
-        for (var i = 0; i < response.data.length; i++) {
+                console.log("Here is the upcoming shows for" + artist);
+                for (var i = 0; i < response.data.length; i++) {
 
-            var show = response.data[i];
+                    var show = response.data[i];
 
-            console.log(
-                show.venue.city +
-                "," +
-                (show.venue.region || show.venue.country) + " at" + 
-                show.venue.name + 
-                " " + 
-                moment(show.datetime).format("MM/DD/YYYY"));
+                    console.log(
+                        show.venue.city +
+                        "," +
+                        (show.venue.region || show.venue.country) + " at" +
+                        show.venue.name +
+                        " " +
+                        moment(show.datetime).format("MM/DD/YYYY"));
 
-        };
-    }
-});
+                };
+            }
+        });
 };
 
-function spotifyThisSong (songName){
+function spotifyThisSong(songName) {
     console.log("spotify is working");
+    if (songName === undefined) {
+        songName = "What's my age again";
+      }
+    
+      spotify.search(
+        {
+          type: "track",
+          query: songName
+        },
+        function(err, data) {
+          if (err) {
+            console.log("Error occurred: " + err);
+            return;
+          }
+    
+          var songs = data.tracks.items;
+    
+          for (var i = 0; i < songs.length; i++) {
+            console.log(i);
+            console.log("artist(s): " + songs[i].artists.map(getArtistNames));
+            console.log("song name: " + songs[i].name);
+            console.log("preview song: " + songs[i].preview_url);
+            console.log("album: " + songs[i].album.name);
+            console.log("-----------------------------------");
+          }
+        }
+      );
+
+
 };
 
-function movieThis (movieName){
+function movieThis(movieName) {
     console.log("movie is working");
     if (movieName === undefined) {
         movieName = "Mr Nobody";
-      }
-    
-      var movieUrl =
+    }
+
+    var movieUrl =
         "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=full&tomatoes=true&apikey=trilogy";
-    
-      axios.get(movieUrl).then(
-        function(response) {
-          var movieData = response.data;
-    
-          console.log("Title: " + movieData.Title);
-          console.log("Year: " + movieData.Year);
-          console.log("Rated: " + movieData.Rated);
-          console.log("IMDB Rating: " + movieData.imdbRating);
-          console.log("Country: " + movieData.Country);
-          console.log("Language: " + movieData.Language);
-          console.log("Plot: " + movieData.Plot);
-          console.log("Actors: " + movieData.Actors);
-          console.log("Rotten Tomatoes Rating: " + movieData.Ratings[1].Value);
+
+    axios.get(movieUrl).then(
+        function (response) {
+            var movieData = response.data;
+
+            console.log("Title: " + movieData.Title);
+            console.log("Year: " + movieData.Year);
+            console.log("Rated: " + movieData.Rated);
+            console.log("IMDB Rating: " + movieData.imdbRating);
+            console.log("Country: " + movieData.Country);
+            console.log("Language: " + movieData.Language);
+            console.log("Plot: " + movieData.Plot);
+            console.log("Actors: " + movieData.Actors);
+            console.log("Rotten Tomatoes Rating: " + movieData.Ratings[1].Value);
         }
-      );
+    );
 };
 
-function doWhatItSays () {
+function doWhatItSays() {
     console.log("dowhatitsays is working");
-    fs.readFile("random.txt", "utf8", function(error, data) {
+    fs.readFile("random.txt", "utf8", function (error, data) {
         console.log(data);
-    
+
         var dataArray = data.split(",");
-    
+
         if (dataArray.length === 2) {
-          pick(dataArray[0], dataArray[1]);
+            pick(dataArray[0], dataArray[1]);
         } else if (dataArray.length === 1) {
-          pick(dataArray[0]);
+            pick(dataArray[0]);
         }
-      });
+    });
 
 };
 
@@ -115,17 +145,17 @@ function doWhatItSays () {
 
 
 
-if (toDo = "concert-this"){
-concertThis(toDoFollow);
+if (toDo = "concert-this") {
+    concertThis(toDoFollow);
 
 }
-else if (toDo = "spotify-this-song"){
+else if (toDo = "spotify-this-song") {
     spotifyThisSong(toDoFollow);
 }
-else if (toDo = "movie-this"){
+else if (toDo = "movie-this") {
     movieThis(toDoFollow);
 }
-else if (toDo = "do-what-it-says"){
+else if (toDo = "do-what-it-says") {
     doWhatItSays();
 }
 else {
