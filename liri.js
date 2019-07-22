@@ -41,7 +41,6 @@ function concertThis(artist) {
 
     axios.get(bandsUrl)
         .then(function (response) {
-            console.log(response.data);
             var bandsData=response.data;
 
             if (!bandsData.length) {
@@ -65,6 +64,8 @@ function concertThis(artist) {
             }
         });
 };
+
+//node liri.js spotify-this-song '<song name here>
 
 function spotifyThisSong(songName) {
     console.log("spotify is working");
@@ -99,6 +100,9 @@ function spotifyThisSong(songName) {
 
 };
 
+
+//node liri.js movie-this '<movie name here>
+
 function movieThis(movieName) {
     console.log("movie is working");
     if (movieName === undefined) {
@@ -125,6 +129,8 @@ function movieThis(movieName) {
     );
 };
 
+//node liri.js do-what-it-says
+
 function doWhatItSays() {
     console.log("dowhatitsays is working");
     fs.readFile("random.txt", "utf8", function (error, data) {
@@ -133,9 +139,9 @@ function doWhatItSays() {
         var dataArray = data.split(",");
 
         if (dataArray.length === 2) {
-            pick(dataArray[0], dataArray[1]);
+            option(dataArray[0], dataArray[1]);
         } else if (dataArray.length === 1) {
-            pick(dataArray[0]);
+            option(dataArray[0]);
         }
     });
 
@@ -143,21 +149,24 @@ function doWhatItSays() {
 
 
 
+var option = function(toDo, toDoFollow) {
+    if (toDo === "concert-this") {
+        concertThis(toDoFollow);
+    
+    }
+    else if (toDo ==="spotify-this-song") {
+        spotifyThisSong(toDoFollow);
+    }
+    else if (toDo === "movie-this") {
+        movieThis(toDoFollow);
+    }
+    else if (toDo === "do-what-it-says") {
+        doWhatItSays();
+    }
+    else {
+        console.log("Function running but you did it wrong");
+    };
 
-
-if (toDo = "concert-this") {
-    concertThis(toDoFollow);
-
-}
-else if (toDo = "spotify-this-song") {
-    spotifyThisSong(toDoFollow);
-}
-else if (toDo = "movie-this") {
-    movieThis(toDoFollow);
-}
-else if (toDo = "do-what-it-says") {
-    doWhatItSays();
-}
-else {
-    console.log("Function running but you did it wrong");
 };
+
+option(toDo, toDoFollow);
